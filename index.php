@@ -103,14 +103,11 @@
                     <div class="feed outfit_grid">
                         <?php
                         $forecast = $core->getForecast();
-                        foreach ($forecast as $day){
-                            $low = $day->low->fahrenheit;
-                            $high = $day->high->fahrenheit;
-                            $results = $core->getOutfit($high,$low);
-
+                        foreach ($forecast as $dow=>$day){
                             echo "<div class='col-md-3'";
-                            echo "<strong>".$day->date->weekday."</strong> (<i>".$results['cond']."</i>)<br/>";
-                            foreach ($results['outfit'] as $article){
+                            echo "<strong>".$dow."</strong> (<i>".$day['cond']."</i>)<br/>";
+                            echo "High: ".$day['high'].", Low: ".$day['low']."<br/>";
+                            foreach ($day['outfit'] as $article){
                                 echo "<div id='outfit_$article' class='outfit'></div>";
                             }
                             echo "</div>";
@@ -151,6 +148,6 @@
 
 </body>
 <footer>
-    <div class="footer">copyright © 2015 robot armies</div>
+    <div class="footer">copyright © 2016 robot armies</div>
 </footer>
 </html>

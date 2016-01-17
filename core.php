@@ -2,6 +2,10 @@
 
 class WeatherDressed {
 
+    public function cacheFiles(){
+
+    }
+
     public function getBackground() {
         $bg_array = $this->getDirectoryList('img/bg');
         return "img/bg/".$bg_array[array_rand($bg_array)];
@@ -37,7 +41,11 @@ class WeatherDressed {
         $json_string = file_get_contents("http://api.wunderground.com/api/3d9047991415094c/forecast/q/SC/Charleston.json");
         $parsed_json = json_decode($json_string);
         $forecast = $parsed_json->forecast->simpleforecast->forecastday;
-        return $forecast;
+        $outfits = array();
+        foreach ($forecast as $day) {
+            $outfits[$day->date->weekday] = $this->getOutfit($day->high->fahrenheit, $day->low->fahrenheit);
+        }
+        return $outfits;
     }
 
     public function getOutfit($high=null,$low=null,$rain=null,$hum=null,$wind=null) {
@@ -72,7 +80,9 @@ class WeatherDressed {
         $outfit = explode(',',$outfit_matrix[$temp_desc]);
         $results = array(
             'outfit'=>$outfit,
-            'cond'=>$temp_desc
+            'cond'=>$temp_desc,
+            'high'=>$high,
+            'low'=>$low
         );
         return $results;
     }
