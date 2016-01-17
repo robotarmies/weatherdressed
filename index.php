@@ -45,8 +45,8 @@
                 </button>
                 <a class="navbar-brand" href="#page-top">
                     <i class="fa fa-clock-o"></i>
-                    <span class="light"><?php echo date('l, F jS Y') ?> / </span>
-                    <div id="clock">4:20:00 PM</div> / Currently
+<!--                    <span class="light">--><?php //echo date('l, F jS Y') ?><!-- / </span>-->
+<!--                    <div id="clock">4:20:00 PM</div> / Currently-->
                     <div id="weather" align="center">69° F & Sunny</div>
                 </a>
             </div>
