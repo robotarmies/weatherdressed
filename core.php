@@ -177,7 +177,7 @@ class WeatherDressed {
                     $text = "It's going to be cold out. You will want a jacket. Maybe the puffy coat?";
                     break;
                 case "freezing":
-                    $text = 'Brrrr. It is going to be really cold out there, so make sure to wear a few layers and stay toasty.';
+                    $text = 'Burr... It is going to be really cold out there, so make sure to wear a few layers and stay toasty.';
                     break;
                 case "raining":
                     $text = "It gon rain. Make sure you have your rain coat and some good shoes.";
@@ -202,7 +202,7 @@ class WeatherDressed {
                     $text = "It's cold out. You will want a jacket. Maybe the puffy coat?";
                     break;
                 case "freezing":
-                    $text = 'Brrrr. It is freezing outside, so make sure to wear several layers and stay toasty.';
+                    $text = 'Burr... It is freezing outside, so make sure to wear several layers and stay toasty.';
                     break;
                 case "raining":
                     $text = "It gon rain. Make sure you have your rain coat and some good shoes.";
