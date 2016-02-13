@@ -14,6 +14,24 @@ foreach($post as $key=>$value) {
 }
 fclose($file);
 
+$x = '{
+  "version": "1.0",
+  "response": {
+      "outputSpeech": {
+      "type": "PlainText",
+      "text": ""
+    },
+    "card": {
+      "type": "Simple",
+      "content": "'.$post_json.'",
+      "title": ""
+    },
+    "reprompt": null,
+    "shouldEndSession": true
+  },
+  "sessionAttributes": null
+}';
+
 
 /* Output header */
 header('Content-type: application/json');
