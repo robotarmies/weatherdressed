@@ -9,14 +9,15 @@ if (isset($json) && $json !== '' && $json !== NULL ){
     $requestType = $obj->request->type;
     $intent = $obj->request->intent->name;
     $date = $obj->request->intent->slots->date->value;
-} else {
+}
+else {
     //fallback for testing
-    $intent = "getCurrent";
-    $date = '2016-02-15';
+    $intent = "HelpIntent";
+//    $date = '2016-02-15';
 }
 
     if ($intent == "HelpIntent"){
-        $json = "Need some Help info here.";
+        $json = $core->getHelpResponse();
     } elseif ($intent == "getForecast"){
         $json = $core->alexaForecast(false,$date);
     } else {
