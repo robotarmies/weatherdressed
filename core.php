@@ -30,11 +30,17 @@ class WeatherDressed {
         }
 
     public function getCurrentWeather() {
-        $json_string = file_get_contents("http://api.wunderground.com/api/3d9047991415094c/conditions/q/SC/Charleston.json");
+        $json_string = file_get_contents("http://api.wunderground.com/api/3d9047991415094c/conditions/q/SC/29464.json");
         $parsed_json = json_decode($json_string);
-        $location = $parsed_json->{'location'}->{'city'};
-        $temp_f = $parsed_json->{'current_observation'}->{'temp_f'};
-        //echo "Current temperature in ${location} is: ${temp_f}\n";
+        $location = $parsed_json->current_observation->display_location->full;
+        $temp_f = $parsed_json->current_observation->temp_f;
+        $outfit = $this->getOutfit($temp_f, $temp_f);
+        $resp = array(
+            'location'=>$location,
+            'temp'=>$temp_f,
+            'outfit'=>$outfit
+        );
+        return $resp;
     }
 
     public function getForecast() {
@@ -85,6 +91,42 @@ class WeatherDressed {
             'low'=>$low
         );
         return $results;
+    }
+
+    public function alexa() {
+        $x = $this->getCurrentWeather();
+        $condition = $x['outfit']['cond'];
+        $outfit = $x['outfit']['outfit'][2];
+        $dress = '';
+        //get the suggestion
+        if ($outfit == 'hoodie'){
+            $dress = 'You should wear a jacket to stay toasty.';
+        } elseif ($outfit == 'sweater') {
+            $dress = 'You should wear a sweater.';
+        } elseif ($outfit == 'jacket') {
+            $dress = 'You should wear a warm jacket. Brrrr.';
+        }
+
+        $response = "It is currently $x[temp] degrees in $x[location] and $condition out. $dress";
+        $json = '{
+                  "version": "1.0",
+                  "response": {
+                    "outputSpeech": {
+                      "type": "PlainText",
+                      "text": "'.$response.'"
+                    },
+                    "card": {
+                      "type": "Simple",
+                      "content": "'.$response.'",
+                      "title": "WeatherDressed"
+                    },
+                    "reprompt": null,
+                    "shouldEndSession": true
+                  },
+                  "sessionAttributes": null
+                }';
+
+        return $json;
     }
 
 }
