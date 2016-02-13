@@ -1,0 +1,21 @@
+{
+  "intents": [
+    {
+      "intent": "HelpIntent",
+      "slots": []
+    },
+    {
+      "intent": "GetCurrent",
+      "slots": []
+    },
+    {
+      "intent": "GetForecast",
+      "slots": [
+        {
+            "name": "date",
+            "type": "AMAZON.DATE"
+        }
+      ]
+    },
+  ]
+}
