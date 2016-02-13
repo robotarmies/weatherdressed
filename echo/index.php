@@ -1,19 +1,27 @@
 <?php
 require_once '../core.php';
 $core = new WeatherDressed();
+
 $json = file_get_contents('php://input');
-$obj = json_decode($json);
-$requestType = $obj->request->type;
-$intent = $obj->request->intent->name;
-if ($intent == "HelpIntent"){
-    $json = "Need some Help info here.";
-}
-elseif ($intent == "getForecast"){
+
+if (isset($json) && $json !== '' && $json !== NULL ){
+    $obj = json_decode($json);
+    $requestType = $obj->request->type;
+    $intent = $obj->request->intent->name;
     $date = $obj->request->intent->slots->date->value;
-    $json = $core->alexa();
 } else {
-    $json = $core->alexa();
+    //fallback for testing
+    $intent = "getCurrent";
+    $date = '2016-02-15';
 }
+
+    if ($intent == "HelpIntent"){
+        $json = "Need some Help info here.";
+    } elseif ($intent == "getForecast"){
+        $json = $core->alexaForecast(false,$date);
+    } else {
+        $json = $core->alexaForecast(true);
+    }
 
 /* Output header */
 header('Content-type: application/json');
