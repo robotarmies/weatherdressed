@@ -5,7 +5,7 @@ $json = file_get_contents('php://input');
 $obj = json_decode($json);
 $requestType = $obj->request->type;
 $intent = $obj->request->intent->name;
-if ($intent = "HelpIntent"){
+if ($intent == "HelpIntent"){
     $json = "Need some Help info here.";
 }
 elseif ($intent == "getForecast"){
