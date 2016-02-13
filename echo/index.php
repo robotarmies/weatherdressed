@@ -1,38 +1,20 @@
 <?php
 require_once '../core.php';
 $core = new WeatherDressed();
-//$x = $_REQUEST;
-$json = $core->alexa();
-
-//TESTING THE REQUEST
-$file = fopen("test.txt","a");
-$post_json = $_POST;
-$post = json_decode($post_json, true);
-foreach($post as $key=>$value) {
-    $message = $key . ":" . $value . "\n";
-    echo fwrite($file,$message);
+$json = file_get_contents('php://input');
+$obj = json_decode($json);
+$requestType = $obj->request->type;
+$intent = $obj->request->intent->name;
+if ($intent = "HelpIntent"){
+    $json = "Need some Help info here.";
 }
-fclose($file);
-
-$x = '{
-  "version": "1.0",
-  "response": {
-      "outputSpeech": {
-      "type": "PlainText",
-      "text": ""
-    },
-    "card": {
-      "type": "Simple",
-      "content": "'.$message.'",
-      "title": ""
-    },
-    "reprompt": null,
-    "shouldEndSession": true
-  },
-  "sessionAttributes": null
-}';
-
+elseif ($intent == "getForecast"){
+    $date = $obj->request->intent->slots->date->value;
+    $json = $core->alexa();
+} else {
+    $json = $core->alexa();
+}
 
 /* Output header */
 header('Content-type: application/json');
-echo $x;
+echo $json;
