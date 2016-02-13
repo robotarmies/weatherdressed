@@ -35,4 +35,4 @@ $x = '{
 
 /* Output header */
 header('Content-type: application/json');
-echo $json;
+echo $x;
