@@ -23,7 +23,7 @@ $x = '{
     },
     "card": {
       "type": "Simple",
-      "content": "'.$post_json.'",
+      "content": "'.$message.'",
       "title": ""
     },
     "reprompt": null,
