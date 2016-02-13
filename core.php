@@ -118,7 +118,7 @@ class WeatherDressed {
                     "card": {
                       "type": "Simple",
                       "content": "'.$response.'",
-                      "title": "WeatherDressed"
+                      "title": "Dressed for the weather"
                     },
                     "reprompt": null,
                     "shouldEndSession": true
