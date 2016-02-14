@@ -9,7 +9,6 @@ if (isset($json) && $json !== '' && $json !== NULL ){
     $requestType = $obj->request->type;
     $intent = $obj->request->intent->name;
     $media = $obj->request->intent->slots->media->value;
-    var_dump($obj);
 }
 else {
     //fallback for testing
