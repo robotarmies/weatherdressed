@@ -61,35 +61,79 @@ class WeatherDressed {
         return $resp;
     }
 
-    public function getForecast() {
-    $json_string = file_get_contents("http://api.wunderground.com/api/3d9047991415094c/forecast/q/SC/Charleston.json");
+    public function getForecast($date = NULL) {
+    $json_string = file_get_contents("http://api.wunderground.com/api/3d9047991415094c/hourly10day/q/SC/Charleston.json");
     $parsed_json = json_decode($json_string);
-    $forecast = $parsed_json->forecast->simpleforecast->forecastday;
+    $forecast = $parsed_json->hourly_forecast;
     $outfits = array();
-    foreach ($forecast as $day) {
-        $outfits[$day->date->weekday] = $this->getOutfit($day->high->fahrenheit, $day->low->fahrenheit);
-    }
-    return $outfits;
-    }
+    $results = array();
+        if (isset($date) && $date !== NULL){
+            $dom = substr($date,-2);
+        } else {
+            $dom = NULL;
+        }
 
-    public function getForecastByDate($date) {
-        $json_string = file_get_contents("http://api.wunderground.com/api/3d9047991415094c/forecast/q/SC/Charleston.json");
-        $parsed_json = json_decode($json_string);
-        $forecast = $parsed_json->forecast->simpleforecast->forecastday;
-        $dom = substr($date,-2);
         foreach ($forecast as $day) {
-            if ($day->date->day == $dom){
-                return $day;
+            //set result if date is not set (all) OR if date is set and matches day
+            if ($date == NULL || $dom == $day->FCTTIME->mday_padded){
+                //restricting results by the hour for better normalization
+                if ($day->FCTTIME->hour > 8 && $day->FCTTIME->hour < 22) {
+                    $results[$day->FCTTIME->mday_padded][$day->FCTTIME->hour_padded] = array(
+                        'condition' => $day->condition,
+                        'temp' => $day->temp->english,
+                        'feels_like' => $day->feelslike->english,
+                        'pop' => $day->pop,
+                        'weekday' => $day->FCTTIME->weekday_name
+                    );
+                }
             }
         }
-        return NULL;
+        //Now we have the next ten days broken down by hour.
+        foreach ($results as $dom => $result) {
+            $highDay = 0;
+            $lowDay = 100;
+            $popDay = 0;
+            foreach ($result as $hod => $hour) {
+                    $temp = (int)$hour['feels_like'];
+                    $pop = (int)$hour['pop'];
+                    $wkday = $hour['weekday'];
+
+                    //set daily high and low and biggest difference in temp
+                    if ($temp > $highDay){
+                        $highDay = $temp;
+                    }
+                    if ($temp < $lowDay) {
+                        $lowDay = $temp;
+                    }
+
+                    //check POP
+                    if ($pop > $popDay){
+                        $popDay = $pop;
+                    }
+            }
+            $dayStats[$wkday] = array(
+                'high' => $highDay,
+                'low' => $lowDay,
+                'pop' => $popDay,
+                'desc' => $day->condition
+            );
+
+        }
+
+        if ($date !== NULL){
+            return $dayStats;
+        }
+
+        //todo: rework outfit builder
+        foreach ($dayStats as $key => $stat){
+            $outfits[$key] = $this->getOutfit($stat['high'],$stat['low'],$stat['pop']);
+        }
+
+        return $outfits;
     }
 
-    public function getOutfit($high=null,$low=null,$rain=null,$hum=null,$wind=null) {
-    //start with the basic thresholds
+    public function getConditions($high,$low){
         $temp_index = $this->_tempIndex;
-
-        $outfit = NULL;
         $avg_temp = ($high + $low)/2;
         $temp_desc = null;
 
@@ -98,6 +142,12 @@ class WeatherDressed {
                 $temp_desc = $key;
             }
         }
+        return $temp_desc;
+    }
+
+    public function getOutfit($high=null,$low=null,$rain=null,$hum=null,$wind=null) {
+        $outfit = NULL;
+        $temp_desc = $this->getConditions($high,$low);
 
         // very basic men's outfit based on temp
         $outfit_matrix = $this->outfit_matrix;
@@ -119,22 +169,27 @@ class WeatherDressed {
             $text = $this->alexaText($condition);
             $response = "It is currently $x[temp] degrees in $x[location]. $text";
         } else {
-            $forecast = $this->getForecastByDate($date);
-            $outfit = $this->getOutfit($forecast->high->fahrenheit,$forecast->low->fahrenheit);
+            $forecast = $this->getForecast($date);
+            foreach ($forecast as $day=> $row){
+                $high = $row['high'];
+                $low = $row['high'];
+                $dow = "on ".$day;
+                $outfit = $this->getOutfit($high,$low);
+            }
 
-            //set the variables for the text response
-            $dow = "on ".$forecast->date->weekday;
             $condition = $outfit['cond'];
-            $description = $forecast->conditions;
-            $pop = $forecast->pop;
+            //set the variables for the text response
+            $description = $row['desc'];
+            $pop = $row['pop'];
 //            $avewind = $forecast->avewind->mph;
 //            $humidity = $forecast->avehumidity;
-            $high = $outfit['high'];
-            $low = $outfit['low'];
+//            $high = $outfit['high'];
+//            $low = $outfit['low'];
 
 
             $text = $this->alexaText($condition,true);
 
+            date_default_timezone_set('America/New_York');
             if (getdate()['mday'] == substr($date,-2)) {
                 $dow = "Today";
             } else if ((getdate()['mday'] + 1) == substr($date,-2)){
@@ -193,7 +248,7 @@ class WeatherDressed {
                     $text = "It's warm out. You'll be fine in a short sleeved shirt.";
                     break;
                 case "nice":
-                    $text = "It is a perfect temperature today.";
+                    $text = "";
                     break;
                 case "cool":
                     $text = "It's cool out. You may want to grab a sweater or light coat";
