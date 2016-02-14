@@ -1,50 +1,15 @@
-GetForecast what should I wear {date}
-GetForecast what do I wear {date}
-GetForecast what am I wearing {date}
-GetForecast do I need to dress warm {date}
-GetForecast do I need a coat {date}
-GetForecast do I need a raincoat {date}
-GetForecast do I need a sweater {date}
-GetForecast do I need a hoodie {date}
-GetForecast do I need a jacket {date}
-GetForecast how should I dress {date}
-GetForecast get my outfit for {date}
+SearchMedia to search for {finding nemo | media}
+SearchMedia search for {the godfather | media}
+SearchMedia to look for {finding nemo | media}
+SearchMedia look for {grandmas boy | media}
+SearchMedia to look up {finding nemo | media}
+SearchMedia look up {the lion king | media}
+SearchMedia find {star wars | media}
+SearchMedia to find {fight club | media}
+SearchMedia see if you can find {star trek | media}
 
-GetCurrent do I need a coat
-GetCurrent do I need a coat right now
-GetCurrent do I need to wear a coat right now
-GetCurrent do I need a jacket
-GetCurrent do I need a jacket right now
-GetCurrent do I need to wear a jacket right now
-GetCurrent do I need to wear a sweater
-GetCurrent do I need a sweater
-GetCurrent do I need a sweater right now
-GetCurrent do I need a raincoat
-GetCurrent do I need a raincoat right now
-GetCurrent is it cold
-GetCurrent is it cold out
-GetCurrent is it cold outside
-GetCurrent is it cold right now
-GetCurrent is it raining
-GetCurrent is it raining out
-GetCurrent is it raining outside
-GetCurrent is it raining right now
-GetCurrent is it snowing
-GetCurrent is it snowing out
-GetCurrent is it snowing outside
-GetCurrent is it snowing right now
-GetCurrent is it icky
-GetCurrent is it icky out
-GetCurrent is it icky outside
-GetCurrent is it icky right now
-GetCurrent is it nice
-GetCurrent is it nice out
-GetCurrent is it nice outside
-GetCurrent is it nice right now
-GetCurrent is it hot
-GetCurrent is it hot out
-GetCurrent is it hot outside
-GetCurrent is it hot right now
+ChooseMedia download {entry}
+ChooseMedia to download {entry}
 
 HelpIntent help
 HelpIntent help me

@@ -5,15 +5,20 @@
       "slots": []
     },
     {
-      "intent": "GetCurrent",
-      "slots": []
-    },
-    {
-      "intent": "GetForecast",
+      "intent": "SearchMedia",
       "slots": [
         {
-            "name": "date",
-            "type": "AMAZON.DATE"
+            "name" : "media"
+            "type" : "AMAZON.LITERAL"
+        }
+      ]
+    },
+    {
+      "intent": "ChooseMedia",
+      "slots": [
+        {
+            "name": "entry",
+            "type": "AMAZON.NUMBER"
         }
       ]
     },

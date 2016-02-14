@@ -465,4 +465,33 @@ class Media_Core {
         }
         return $results;
     }
+
+    //ALEXA COMMANDS
+    public function getHelpResponse(){
+        $help_text = "The media bot will help you keep your PLEX library updated. Just ask it to search for a movie to see if it is available for download. For more information please visit media dot row bot armies dot com.";
+        $help_card = "The media bot will help you keep your PLEX library updated. Just ask it to search for a movie to see if it is available for download.";
+        return $this->buildResponse($help_text, $help_card);
+    }
+
+    public function buildResponse($response, $card){
+        $json = '
+        {
+        "version": "1.0",
+        "response": {
+            "outputSpeech": {
+                "type": "PlainText",
+                "text": "'.$response.'"
+                },
+            "card": {
+                "type": "Simple",
+                "content": "'.$card.'",
+                "title": "Dressed for the weather"
+                },
+            "reprompt": null,
+            "shouldEndSession": true
+        },
+        "sessionAttributes": null
+        }';
+        return $json;
+    }
 }

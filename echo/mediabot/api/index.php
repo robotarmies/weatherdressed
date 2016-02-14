@@ -8,7 +8,8 @@ if (isset($json) && $json !== '' && $json !== NULL ){
     $obj = json_decode($json);
     $requestType = $obj->request->type;
     $intent = $obj->request->intent->name;
-    $date = $obj->request->intent->slots->date->value;
+    $media = $obj->request->intent->slots->media->value;
+    var_dump($obj);
 }
 else {
     //fallback for testing
@@ -19,10 +20,10 @@ else {
 
     if ($intent == "HelpIntent"){
         $json = $core->getHelpResponse();
-    } elseif ($intent == "GetForecast"){
-        $json = $core->alexaForecast(false,$date);
+    } elseif ($intent == "SearchMedia"){
+        $json = $core->searchMedia($media);
     } else {
-        $json = $core->alexaForecast(true);
+        $json = $core->downloadMedia($entry);
     }
 
 /* Output header */
