@@ -1,5 +1,5 @@
 <?php
-require_once '../core.php';
+require_once 'weatherdressed.php';
 $core = new WeatherDressed();
 
 $json = file_get_contents('php://input');

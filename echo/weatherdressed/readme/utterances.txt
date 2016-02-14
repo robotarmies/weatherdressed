@@ -1,0 +1,64 @@
+GetForecast what should I wear {date}
+GetForecast what do I wear {date}
+GetForecast what am I wearing {date}
+GetForecast do I need to dress warm {date}
+GetForecast do I need a coat {date}
+GetForecast do I need a raincoat {date}
+GetForecast do I need a sweater {date}
+GetForecast do I need a hoodie {date}
+GetForecast do I need a jacket {date}
+GetForecast how should I dress {date}
+GetForecast get my outfit for {date}
+
+GetCurrent do I need a coat
+GetCurrent do I need a coat right now
+GetCurrent do I need to wear a coat right now
+GetCurrent do I need a jacket
+GetCurrent do I need a jacket right now
+GetCurrent do I need to wear a jacket right now
+GetCurrent do I need to wear a sweater
+GetCurrent do I need a sweater
+GetCurrent do I need a sweater right now
+GetCurrent do I need a raincoat
+GetCurrent do I need a raincoat right now
+GetCurrent is it cold
+GetCurrent is it cold out
+GetCurrent is it cold outside
+GetCurrent is it cold right now
+GetCurrent is it raining
+GetCurrent is it raining out
+GetCurrent is it raining outside
+GetCurrent is it raining right now
+GetCurrent is it snowing
+GetCurrent is it snowing out
+GetCurrent is it snowing outside
+GetCurrent is it snowing right now
+GetCurrent is it icky
+GetCurrent is it icky out
+GetCurrent is it icky outside
+GetCurrent is it icky right now
+GetCurrent is it nice
+GetCurrent is it nice out
+GetCurrent is it nice outside
+GetCurrent is it nice right now
+GetCurrent is it hot
+GetCurrent is it hot out
+GetCurrent is it hot outside
+GetCurrent is it hot right now
+
+HelpIntent help
+HelpIntent help me
+HelpIntent what can I ask you
+HelpIntent get help
+HelpIntent to help
+HelpIntent to help me
+HelpIntent what commands can I ask
+HelpIntent what commands can I say
+HelpIntent what can I do
+HelpIntent what can I use this for
+HelpIntent what questions can I ask
+HelpIntent what can you do
+HelpIntent what do you do
+HelpIntent how do I use you
+HelpIntent how can I use you
+HelpIntent what can you tell me
