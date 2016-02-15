@@ -480,7 +480,7 @@ class Media_Core {
         $two = "star wars 2";
         $three = "star wars 3";
         $response = "Now downloading Star Wars.";
-        $prompt = "Anything else?";
+        $prompt = null;
         return $this->buildResponse($response, $response, $prompt);
     }
 
