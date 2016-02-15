@@ -4,7 +4,7 @@ require_once "imdb.php";
 class Media_Core {
 
     private function _dbConnect(){
-        $config = $_SERVER['DOCUMENT_ROOT'] . "/core/config.xml";
+        $config = "config.xml";
         $content = file_get_contents($config);
 //        var_dump($content);
         $x = new SimpleXmlElement($content);
@@ -184,17 +184,6 @@ class Media_Core {
         }
     }
 
-    public function getSearchText($type){
-        $array = array(
-            0 => 'Search for Movies',
-            1 => 'Search for TV Shows',
-            2 => 'Search for High Res Movies',
-            3 => 'Search for High Res TV Shows',
-        );
-        $text = "Robot Armies Media Bot: ".$array[$type];
-        return $text;
-    }
-
     public function matchTitle($searchTitle, $title){
         $title = strtolower($title);
         $searchTitle = strtolower($searchTitle);
@@ -268,50 +257,6 @@ class Media_Core {
         $downloadLink = urlencode($result['link']);
         $link .= "&title=$result[title]&link=$downloadLink&upload_on=$result[date_uploaded]";
         return $link;
-    }
-
-    public function getSeedRatio($result) {
-        $seed = $result['seeders'];
-        $leech = $result['leechers'];
-        $ratio = $seed/$leech;
-        if ($ratio > 1.5){
-            return 'good';
-        } else {
-            return 'bad';
-        }
-    }
-
-    public function getSortLabel($sort) {
-        $sortArray = array(
-            0 => "newest first", //newest first
-            1 => "oldest first", //oldest first
-            2 => "most seeds", //most seeds
-            3 => "least seeds", //least seeds
-            4 => "alphabetical", //alphabetical
-            5 => "reverse alphabetical", //reverse alphabetical
-            6 => "last updated", //last updated
-            7 => "highest rated", //last updated
-        );
-        return $sortArray["$sort"];
-    }
-
-    public function getDirectoryList ($directory)
-    {
-        // create an array to hold directory list
-        $results = array();
-        // create a handler for the directory
-        $handler = opendir($directory);
-        // open directory and walk through the filenames
-        while ($file = readdir($handler)) {
-            // if file isn't this directory or its parent, add it to the results
-            if ($file != "." && $file != "..") {
-                $results[] = $file;
-            }
-        }
-        // tidy up: close the handler
-        closedir($handler);
-        // done!
-        return $results;
     }
 
     public function getSerData($array, $y = null){
@@ -427,29 +372,19 @@ class Media_Core {
         }
     }
 
-    public function sendMessage($count,$insertCount,$added) {
-        //@todo: convert this to function that grabs user name, or admin
-        //$to = 'james@robotarmies.com';
-        //$subject = 'Feeds Updated';
-        //$message = "$count Total\r\n"."Records Added: $insertCount\r\n";
-        //if ($added){
-        //    foreach($added as $title){
-        //        $message .= $title."\r\n";
-        //    }
-        //}
-        //$headers = 'From: media.bot';
-        //$mail = mail($to, $subject, $message, $headers);
-    }
-
     public function getMatch($title, $table){
         //check database for title match
-        $sql = "SELECT * FROM $table WHERE title = '$title'";
-        $query = mysqli_query($this->dbConnect(), $sql) or die(mysql_error());
-        if ($query) {
-            $savedData = $query->fetch_assoc();
-            if ($savedData) {
-                return $savedData['id'];
+        $sql = "SELECT * FROM $table WHERE title COLLATE UTF8_GENERAL_CI LIKE '%$title%'";
+        $results = mysqli_query($this->dbConnect(), $sql) or die(mysql_error());
+        $match = array();
+        if ($results) {
+            foreach ($results as $result){
+                $match[] = array(
+                    'title' => $result['title'],
+                    'id' => $result ['id']
+                );
             }
+            return $match;
         }
         //else return false
         return false;
@@ -467,11 +402,32 @@ class Media_Core {
     }
 
     public function searchMedia($media) {
-        $one = "star wars 1";
-        $two = "star wars 2";
-        $three = "star wars 3";
-        $response = "I found 3 results for $media. Which one would you like to download: $one, $two, or $three";
-        $prompt = "Which one would you like to download: $one, $two, or $three";
+        $title = strtolower($media);
+        $resultsHD = $this->getMatch($title,'pbay_207');
+        $resultsSD = $this->getMatch($title,'pbay_201');
+        $hd = count($resultsHD);
+        $sd = count($resultsSD);
+        $total = $hd + $sd;
+
+        //Initial response and total count
+        $response = "I found $total results for $media: ";
+        //HD results
+        Foreach ($resultsHD as $resultHD){
+            $id = $resultHD['id'];
+            $name = $resultHD['title'];
+            $response .= "Entry number $id: $name.";
+        }
+
+        //SD Results
+        Foreach ($resultsSD as $resultSD){
+            $id = $resultSD['id'];
+            $name = $resultSD['title'];
+            $response .= "Entry $id: $name.";
+        }
+        //final prompt
+        $response .= " ...Which one would you like to download? Please say the entry number.";
+
+        $prompt = "Which one would you like to download?";
         return $this->buildResponse($response, $response, $prompt);
     }
 

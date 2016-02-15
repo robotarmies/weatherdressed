@@ -12,9 +12,9 @@ if (isset($json) && $json !== '' && $json !== NULL ){
 }
 else {
     //fallback for testing
-    $intent = "HelpIntent";
-//    $intent = "searchForecast";
-//    $media = 'Star Wars';
+//    $intent = "HelpIntent";
+    $intent = "SearchMedia";
+    $media = 'ride along';
 }
 
     if ($intent == "HelpIntent"){
