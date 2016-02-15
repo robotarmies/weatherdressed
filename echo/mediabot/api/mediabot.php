@@ -259,30 +259,6 @@ class Media_Core {
         return $link;
     }
 
-    public function getSerData($array, $y = null){
-        $workArray = unserialize($array);
-        $first = true;
-        //setting simple of array of terms NOT to add when building output
-        $doNotUse = array(
-            'See full cast and crew',
-        );
-        if ($workArray){
-            foreach ($workArray as $x){
-
-                if ($first){
-                    $y = $x;
-                    $first = false;
-                } elseif (in_array($x, $doNotUse)){
-                    continue;
-                } else {
-                    $y .= ', '.$x;
-                }
-            }
-        }
-
-        return trim($y);
-    }
-
     public function checkMovieInfo($entry = null) {
         $imdb = new Imdb();
         $j = 0;
@@ -394,6 +370,28 @@ class Media_Core {
         return false;
     }
 
+    public function downloadByID($id){
+        //GRAB MOVIE DATA
+        $sql = "SELECT * FROM `pbay_207`  WHERE `id` = $id";
+        $query = mysqli_query($this->dbConnect(), $sql) or die(mysql_error());
+        while ($row = mysqli_fetch_array($query)){
+            $item = $row;
+        }
+
+        //SET THE RESULTS
+        $title = $item['title'];
+        $link = $item['link'];
+
+        //CHECK IF ENTRY EXISTS, ELSE ADD IT
+        $match = $this->getMatch($title,'movie_feed');
+        if (!$match){
+            $query = $this->dbUpdate("INSERT INTO movie_feed (title, link) VALUES ('$title', '$link')");
+            return $title;
+        } else {
+            return false;
+        }
+    }
+
     public function getFeedList() {
         $table = 'movie_feed';
         $results = NULL;
@@ -441,9 +439,10 @@ class Media_Core {
         return $this->buildResponse($response, $response, $prompt);
     }
 
-    public function chooseMedia($media) {
+    public function chooseMedia($id) {
+        $dl = $this->downloadByID($id);
 
-        $response = "Now downloading entry $media.";
+        $response = "Now downloading entry $dl.";
         $prompt = null;
         return $this->buildResponse($response, $response, $prompt);
     }

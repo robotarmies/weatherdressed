@@ -14,8 +14,9 @@ if (isset($json) && $json !== '' && $json !== NULL ){
 else {
     //fallback for testing
 //    $intent = "HelpIntent";
-    $intent = "SearchMedia";
-    $media = 'star wars';
+    $intent = "Download";
+    $media = 'martian';
+    $entry = 11;
 }
 
     if ($intent == "HelpIntent"){
@@ -23,7 +24,6 @@ else {
     } elseif ($intent == "SearchMedia"){
         $json = $core->searchMedia($media);
     } else {
-        $media =
         $json = $core->ChooseMedia($entry);
     }
 
