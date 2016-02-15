@@ -494,9 +494,12 @@ class Media_Core {
             "card": {
                 "type": "Simple",
                 "content": "'.$card.'",
-                "title": "Dressed for the weather"
+                "title": "MediaBot"
                 },
-            "reprompt": null,
+            "reprompt":  "outputSpeech": {
+                "type": "PlainText",
+                "text": "'.$reprompt.'"
+                },
             "shouldEndSession": ';
         if ($reprompt !== null) {
             $json .= "false";
