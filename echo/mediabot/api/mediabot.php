@@ -420,7 +420,7 @@ class Media_Core {
             Foreach ($resultsHD as $resultHD) {
                 $id = $resultHD['id'];
                 $name = $resultHD['title'];
-                $response .= "Entry number $id: $name.....";
+                $response .= "Entry number $id: $name, ";
             }
 
             //SD Results
@@ -443,7 +443,7 @@ class Media_Core {
 
     public function chooseMedia($media) {
 
-        $response = "Now downloading Star Wars.";
+        $response = "Now downloading entry $media.";
         $prompt = null;
         return $this->buildResponse($response, $response, $prompt);
     }
