@@ -500,7 +500,7 @@ class Media_Core {
                 "outputSpeech": {
                     "type": "PlainText",
                     "text": "'.$reprompt.'"
-                },
+                }
             },
             "shouldEndSession": ';
         if ($reprompt !== null) {
