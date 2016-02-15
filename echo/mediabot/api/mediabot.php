@@ -496,10 +496,12 @@ class Media_Core {
                 "content": "'.$card.'",
                 "title": "MediaBot"
                 },
-            "reprompt":  "outputSpeech": {
-                "type": "PlainText",
-                "text": "'.$reprompt.'"
+            "reprompt":  {
+                "outputSpeech": {
+                    "type": "PlainText",
+                    "text": "'.$reprompt.'"
                 },
+            },
             "shouldEndSession": ';
         if ($reprompt !== null) {
             $json .= "false";
