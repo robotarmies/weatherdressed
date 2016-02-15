@@ -15,7 +15,7 @@ else {
     //fallback for testing
 //    $intent = "HelpIntent";
     $intent = "SearchMedia";
-    $media = 'ride along';
+    $media = 'star wars';
 }
 
     if ($intent == "HelpIntent"){

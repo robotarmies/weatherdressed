@@ -415,12 +415,12 @@ class Media_Core {
 
         if ($hd > 0 ) {
             //Initial response and total count
-            $response = "I found $hd results for $media: ";
+            $response = "I found $hd results for $media: <break time='1s'/>";
             //HD results
             Foreach ($resultsHD as $resultHD) {
                 $id = $resultHD['id'];
                 $name = $resultHD['title'];
-                $response .= "Entry number $id: $name, ";
+                $response .= "Entry number $id: $name <break time='2s'/>";
             }
 
             //SD Results
@@ -461,8 +461,8 @@ class Media_Core {
         "version": "1.0",
         "response": {
             "outputSpeech": {
-                "type": "PlainText",
-                "text": "'.$response.'"
+                "type": "SSML",
+                "text": "<speak>'.$response.'</speak>"
                 },
             "card": {
                 "type": "Simple",
