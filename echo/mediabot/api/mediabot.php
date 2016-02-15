@@ -404,37 +404,41 @@ class Media_Core {
     public function searchMedia($media) {
         $title = strtolower($media);
         $resultsHD = $this->getMatch($title,'pbay_207');
-        $resultsSD = $this->getMatch($title,'pbay_201');
+//        $resultsSD = $this->getMatch($title,'pbay_201');
         $hd = count($resultsHD);
-        $sd = count($resultsSD);
-        $total = $hd + $sd;
+//        $sd = count($resultsSD);
+//        $total = $hd + $sd;
 
-        //Initial response and total count
-        $response = "I found $total results for $media: ";
-        //HD results
-        Foreach ($resultsHD as $resultHD){
-            $id = $resultHD['id'];
-            $name = $resultHD['title'];
-            $response .= "Entry number $id: $name.";
+        if ($hd > 0 ) {
+            //Initial response and total count
+            $response = "I found $hd results for $media: ";
+            //HD results
+            Foreach ($resultsHD as $resultHD) {
+                $id = $resultHD['id'];
+                $name = $resultHD['title'];
+                $response .= "Entry number $id: $name. \n\r";
+            }
+
+            //SD Results
+            //        Foreach ($resultsSD as $resultSD){
+            //            $id = $resultSD['id'];
+            //            $name = $resultSD['title'];
+            //            $response .= "Entry $id: $name.";
+            //        }
+            //final prompt
+            $response .= " ...Which one would you like to download? Please say the entry number.";
+
+            $prompt = "Which one would you like to download?";
+        } else {
+            $response = "I'm sorry, I couldn;t find any results for $media.";
+            $prompt = null;
         }
 
-        //SD Results
-        Foreach ($resultsSD as $resultSD){
-            $id = $resultSD['id'];
-            $name = $resultSD['title'];
-            $response .= "Entry $id: $name.";
-        }
-        //final prompt
-        $response .= " ...Which one would you like to download? Please say the entry number.";
-
-        $prompt = "Which one would you like to download?";
         return $this->buildResponse($response, $response, $prompt);
     }
 
     public function chooseMedia($media) {
-        $one = "star wars 1";
-        $two = "star wars 2";
-        $three = "star wars 3";
+
         $response = "Now downloading Star Wars.";
         $prompt = null;
         return $this->buildResponse($response, $response, $prompt);
