@@ -12,9 +12,9 @@ if (isset($json) && $json !== '' && $json !== NULL ){
 }
 else {
     //fallback for testing
-    $intent = "";
-//    $intent = "GetForecast";
-//    $date = '2016-02-14';
+//    $intent = "HelpIntent";
+    $intent = "GetForecast";
+    $media = 'Star Wars';
 }
 
     if ($intent == "HelpIntent"){
@@ -22,7 +22,7 @@ else {
     } elseif ($intent == "SearchMedia"){
         $json = $core->searchMedia($media);
     } else {
-        $json = $core->downloadMedia($entry);
+        $json = $core->searchMedia($media);
     }
 
 /* Output header */

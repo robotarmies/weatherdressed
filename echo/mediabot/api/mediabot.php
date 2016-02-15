@@ -496,14 +496,21 @@ class Media_Core {
                 "content": "'.$card.'",
                 "title": "Dressed for the weather"
                 },
-            "reprompt": '.$reprompt.',
+            "reprompt": ';
+        if ($reprompt !== null) {
+            $json .='"'.$reprompt.'"';
+        } else {
+            $json .= null;
+        }
+        $json .= ',
             "shouldEndSession": ';
         if ($reprompt !== null) {
             $json .= "false";
         } else {
             $json .= "true";
         }
-        $json .= '},
+        $json .= '
+        },
         "sessionAttributes": null
         }';
         return $json;
