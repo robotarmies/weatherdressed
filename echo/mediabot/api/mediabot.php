@@ -462,7 +462,7 @@ class Media_Core {
         "response": {
             "outputSpeech": {
                 "type": "SSML",
-                "text": "<speak>'.$response.'</speak>"
+                "ssml": "<speak>'.$response.'</speak>"
                 },
             "card": {
                 "type": "Simple",
