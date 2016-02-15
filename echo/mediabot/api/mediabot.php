@@ -378,11 +378,15 @@ class Media_Core {
         $results = mysqli_query($this->dbConnect(), $sql) or die(mysql_error());
         $match = array();
         if ($results) {
+            $i = 0;
             foreach ($results as $result){
-                $match[] = array(
-                    'title' => $result['title'],
-                    'id' => $result ['id']
-                );
+                if ($i < 3){
+                    $match[] = array(
+                        'title' => $result['title'],
+                        'id' => $result ['id']
+                    );
+                    $i++;
+                }
             }
             return $match;
         }
@@ -430,7 +434,7 @@ class Media_Core {
 
             $prompt = "Which one would you like to download?";
         } else {
-            $response = "I'm sorry, I couldn;t find any results for $media.";
+            $response = "I'm sorry, I couldn't find any results for $media.";
             $prompt = null;
         }
 
