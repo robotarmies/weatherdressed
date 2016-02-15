@@ -9,6 +9,7 @@ if (isset($json) && $json !== '' && $json !== NULL ){
     $requestType = $obj->request->type;
     $intent = $obj->request->intent->name;
     $media = $obj->request->intent->slots->media->value;
+    $entry = $obj->request->intent->slots->entry->value;
 }
 else {
     //fallback for testing
@@ -22,7 +23,8 @@ else {
     } elseif ($intent == "SearchMedia"){
         $json = $core->searchMedia($media);
     } else {
-        $json = $core->ChooseMedia($media);
+        $media =
+        $json = $core->ChooseMedia($entry);
     }
 
 /* Output header */
