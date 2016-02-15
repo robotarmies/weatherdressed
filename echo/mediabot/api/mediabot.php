@@ -466,6 +466,15 @@ class Media_Core {
         return $results;
     }
 
+    public function searchMedia($media) {
+        $one = "star wars 1";
+        $two = "star wars 2";
+        $three = "star wars 3";
+        $response = "I found 3 results for $media. Which one would you like to download: $one, $two, or $three";
+        $prompt = "Which one would you like to download: $one, $two, or $three";
+        return $this->buildResponse($response, $response, $prompt);
+    }
+
     //ALEXA COMMANDS
     public function getHelpResponse(){
         $help_text = "The media bot will help you keep your PLEX library updated. Just ask it to search for a movie to see if it is available for download. For more information please visit media dot row bot armies dot com.";
@@ -473,7 +482,7 @@ class Media_Core {
         return $this->buildResponse($help_text, $help_card);
     }
 
-    public function buildResponse($response, $card){
+    public function buildResponse($response, $card, $reprompt = null){
         $json = '
         {
         "version": "1.0",
@@ -487,11 +496,17 @@ class Media_Core {
                 "content": "'.$card.'",
                 "title": "Dressed for the weather"
                 },
-            "reprompt": null,
-            "shouldEndSession": true
-        },
+            "reprompt": '.$reprompt.',
+            "shouldEndSession": ';
+        if ($reprompt !== null) {
+            $json .= "false";
+        } else {
+            $json .= "true";
+        }
+        $json .= '},
         "sessionAttributes": null
         }';
         return $json;
     }
+
 }

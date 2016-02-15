@@ -12,7 +12,7 @@ if (isset($json) && $json !== '' && $json !== NULL ){
 }
 else {
     //fallback for testing
-    $intent = "HelpIntent";
+    $intent = "";
 //    $intent = "GetForecast";
 //    $date = '2016-02-14';
 }
