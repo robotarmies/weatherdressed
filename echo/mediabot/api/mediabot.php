@@ -420,7 +420,7 @@ class Media_Core {
             Foreach ($resultsHD as $resultHD) {
                 $id = $resultHD['id'];
                 $name = $resultHD['title'];
-                $response .= "Entry number $id: $name. \n\r";
+                $response .= "Entry number $id: $name.....";
             }
 
             //SD Results
