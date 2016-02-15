@@ -475,6 +475,15 @@ class Media_Core {
         return $this->buildResponse($response, $response, $prompt);
     }
 
+    public function chooseMedia($media) {
+        $one = "star wars 1";
+        $two = "star wars 2";
+        $three = "star wars 3";
+        $response = "Now downloading Star Wars.";
+        $prompt = "Anything else?";
+        return $this->buildResponse($response, $response, $prompt);
+    }
+
     //ALEXA COMMANDS
     public function getHelpResponse(){
         $help_text = "The media bot will help you keep your PLEX library updated. Just ask it to search for a movie to see if it is available for download. For more information please visit media dot row bot armies dot com.";
