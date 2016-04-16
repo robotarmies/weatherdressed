@@ -102,12 +102,13 @@
                     <h3 class="cl-feed">Weather Dressed</h3>
                     <div class="feed outfit_grid">
                         <?php
-                        $forecast = $core->getForecast();
-                        foreach ($forecast as $dow=>$day){
-                            echo "<div class='col-md-3'";
-                            echo "<strong>".$dow."</strong> (<i>".$day['cond']."</i>)<br/>";
-                            echo "High: ".$day['high'].", Low: ".$day['low']."<br/>";
-                            foreach ($day['outfit'] as $article){
+                        $forecast = $core->getWeatherDressed();
+                        foreach ($forecast as $day){
+                            echo "<div class='col-md-3 entry'>";
+                            echo "<h4>".$day['info']['dow']."</h4><h5>(<i>".ucfirst($day['outfit']['cond'])."</i>)</h5>";
+                            echo "High: ".$day['extremes']['tempHigh'].", Low: ".$day['extremes']['tempLow']."<br/>";
+                            echo "Condition: ".$day['info']['desc']."<br/>";
+                            foreach ($day['outfit']['outfit'] as $article){
                                 echo "<div id='outfit_$article' class='outfit'></div>";
                             }
                             echo "</div>";
@@ -124,13 +125,9 @@
     <!-- Callout -->
     <div id="about" class="callout content-section">
         <div class="vert-text">
-
             <h2>About Weather Dressed</h2>
             <p>This is just some placeholder text.</p>
-            <p>Morbo will now introduce tonight's candidates… PUNY HUMAN NUMBER ONE, PUNY HUMAN NUMBER TWO, and Morbo's good friend, Richard Nixon. Oh, I think we should just stay friends. Are you crazy? I can't swallow that.</p>
-            <h4>Doomsday device? Ah, now the ball's in Farnsworth's court!</h4>
-            <p>I usually try to keep my sadness pent up inside where it can fester quietly as a mental illness. Ummm…to eBay? No! I want to live! There are still too many things I don't own! Man, I'm sore all over. I feel like I just went ten rounds with mighty Thor.</p>
-        </div>
+          </div>
     </div>
     <!-- /Callout -->
 

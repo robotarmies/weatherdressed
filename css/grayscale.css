@@ -25,6 +25,10 @@ h6 {
     letter-spacing: 1px;
 }
 
+h4,h5,h6 {
+    margin: 0 0 0 0;
+}
+
 p {
     margin: 0 0 25px;
     font-size: 24px;
@@ -413,6 +417,10 @@ h3.cl-feed {
 }
 
 /* Weather Outfit Application */
+.entry {
+    padding-bottom: 30px;
+}
+
 .outfit {
     width: 95px;
     height: 95px;
