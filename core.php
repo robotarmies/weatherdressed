@@ -3,6 +3,7 @@
 class WeatherDressed {
 
     private $_tempIndex = array(
+            'sweltering' => 100,
             'hot' => 90,
             'warm' => 75,
             'nice' => 65,
@@ -12,6 +13,7 @@ class WeatherDressed {
     );
 
     private $outfit_matrix = array(
+        'sweltering' => 'ssleeve,shorts',
         'hot' => 'ssleeve,shorts',
         'warm' => 'ssleeve,pants',
         'nice' => 'lsleeve,pants',
@@ -19,6 +21,17 @@ class WeatherDressed {
         'cold' => 'lsleeve,pants,hoodie',
         'freezing' => 'lsleeve,pants,sweater,jacket'
         );
+
+    private $_outfit_presets = array(
+        'ssleeve' => array('red shirt','dark blue shirt','light blue shirt','gray shirt','red/white/blue button down','green button down','t-shirt'),
+        'lsleeve' => array('red shirt','dark blue shirt','light blue shirt','gray shirt','red/white/blue button down','green button down','t-shirt'),
+        'shorts' => array('gray cargos','other gray cargos','light shorts','dark shorts'),
+        'pants' => array('light jeans','slacks','dark jeans')
+    );
+
+    private $_selectedArray = array();
+
+    private $cache = null;
 
     //method to cache weather files to reduce api calls
     private function cacheFiles(){
@@ -51,9 +64,9 @@ class WeatherDressed {
         }
 
     //master method
-    public function getWeatherDressed(){
+    public function getWeatherDressed($zip){
         $wdForecast = array();
-        $forecast = $this->getForecast();
+        $forecast = $this->getForecast($zip);
         foreach ($forecast as $key => $stat){
             $extremes = $this->getHighLows($stat);
             $info = $this->getInfo($stat);
@@ -86,8 +99,8 @@ class WeatherDressed {
     }
 
     //get hourly 10 day forecast
-    private function getForecast($date = NULL) {
-    $json_string = file_get_contents("http://api.wunderground.com/api/3d9047991415094c/hourly10day/q/SC/Charleston.json");
+    private function getForecast($zip=29464,$date = NULL) {
+    $json_string = file_get_contents("http://api.wunderground.com/api/3d9047991415094c/hourly10day/q/$zip.json");
     $parsed_json = json_decode($json_string);
     $forecast = $parsed_json->hourly_forecast;
     $outfits = array();
@@ -166,9 +179,11 @@ class WeatherDressed {
             $dayInfo['dom'] = $hour->FCTTIME->mday;
             $dayInfo['dow'] = $hour->FCTTIME->weekday_name;
             if (isset($dayInfo['desc'])){
-                if(!(strstr($dayInfo['desc'],$hour->wx))) {
-                    $dayInfo['desc'] .= ", ".$hour->wx;
-                }
+                //SKIP FOR NOW
+                //TODO: FIGURE OUT A BETTER WAY TO AGGREGATE THESE
+//                if(!(strstr($dayInfo['desc'],$hour->wx))) {
+//                    $dayInfo['desc'] .= ", ".$hour->wx;
+//                }
             } else {
                 $dayInfo['desc'] = $hour->wx;
             }
@@ -195,13 +210,19 @@ class WeatherDressed {
     //get outfit based on temperature index
     private function getOutfit($high=null,$low=null,$rain=null,$hum=null,$wind=null) {
         $outfit = NULL;
+        $wardrobe = NULL;
         $temp_desc = $this->getConditions($high,$low);
 
         // very basic men's outfit based on temp
         $outfit_matrix = $this->outfit_matrix;
         $outfit = explode(',',$outfit_matrix[$temp_desc]);
+        foreach ($outfit as $article){
+            $wardrobe[] = $this->manageOutfits($article);
+        }
+
         $results = array(
             'outfit'=>$outfit,
+            'wardrobe'=>$wardrobe,
             'cond'=>$temp_desc,
             'high'=>$high,
             'low'=>$low
@@ -209,4 +230,32 @@ class WeatherDressed {
         return $results;
     }
 
+    private function manageOutfits($article, $outfit = null){
+        //cache the outfits
+        if ($this->cache == null){
+            foreach ($this->_outfit_presets as $cacheArticle=>$cacheOptions){
+                if ($this->cache[$cacheArticle] == null){
+                    $this->cache[$cacheArticle] = $cacheOptions;
+                }
+            }
+        }
+        $closet = $this->_outfit_presets;
+        $options = $closet[$article];
+        $selected = $options[array_rand($options)];
+
+        //fallback to rebuild options
+        if ($selected == null){
+            $this->_outfit_presets[$article] = $this->cache[$article];
+            $selected = $this->_outfit_presets[$article][array_rand($this->_outfit_presets[$article])];
+        }
+
+        $key = array_search($selected,$closet[$article]);
+        unset ($this->_outfit_presets[$article][$key]);
+
+    return $selected;
+    }
+
+    private function getWardrobe($temp){
+
+    }
 }

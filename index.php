@@ -2,6 +2,10 @@
     require_once ('core.php');
     $core = new WeatherDressed();
     error_reporting(3);
+    $zip = $_GET['zip'];
+    if ($zip == NULL){
+        $zip = 29464;
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,9 +59,9 @@
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
                 <ul class="nav navbar-nav">
                     <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
-<!--                    <li class="hidden">-->
-<!--                        <a href="#page-top"></a>-->
-<!--                    </li>-->
+                    <li class="page-scroll">
+                        <a href="#page-top">Location</a>
+                    </li>
 <!--                    <li class="page-scroll">-->
 <!--                        <a href="#work">Weather</a>-->
 <!--                    </li>-->
@@ -81,7 +85,13 @@
                     <div class="col-md-9 col-md-offset-2">
 
                        <h1 class="brand-heading">Weather Dressed</h1>
-                        <p class="intro-text">An application that makes sure you're the best dressed human on the planet, no matter what the weather is.</p>
+                        <span class="intro-text">
+                            Current location is <b><?php echo $zip?></b><br><br>
+                            <form method="get" onsubmit="#">
+                                <input type="text" name="zip" placeholder="enter zip code" size="10">
+                                <input type="submit" class="submit">
+                            </form>
+                        </span>
                         <div class="page-scroll">
                             <a href="#work" class="btn btn-circle">
                                 <i class="fa fa-angle-double-down animated"></i>
@@ -102,14 +112,17 @@
                     <h3 class="cl-feed">Weather Dressed</h3>
                     <div class="feed outfit_grid">
                         <?php
-                        $forecast = $core->getWeatherDressed();
+                        $forecast = $core->getWeatherDressed($zip);
                         foreach ($forecast as $day){
                             echo "<div class='col-md-3 entry'>";
                             echo "<h4>".$day['info']['dow']."</h4><h5>(<i>".ucfirst($day['outfit']['cond'])."</i>)</h5>";
                             echo "High: ".$day['extremes']['tempHigh'].", Low: ".$day['extremes']['tempLow']."<br/>";
+                            echo "Humidity: ".$day['extremes']['humidity']."<br/>";
                             echo "Condition: ".$day['info']['desc']."<br/>";
+                            $i = 0;
                             foreach ($day['outfit']['outfit'] as $article){
-                                echo "<div id='outfit_$article' class='outfit'></div>";
+                                echo "<div id='outfit_$article' class='outfit'>".$day['outfit']['wardrobe'][$i]."</div>";
+                                $i++;
                             }
                             echo "</div>";
                         }

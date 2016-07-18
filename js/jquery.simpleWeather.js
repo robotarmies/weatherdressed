@@ -1,132 +1,122 @@
-/*
- * simpleWeather
- * 
- * A simple jQuery plugin to display the weather information
- * for a location. Weather is pulled from the public Yahoo!
- * Weather feed via their api.
- *
- * Developed by James Fleeting <hello@jamesfleeting.com>
- * Another project from monkeeCreate <http://monkeecreate.com>
- *
- * Version 2.0.1 - Last updated: January 26 2012
- */
+/*! simpleWeather v3.1.0 - http://simpleweatherjs.com */
 (function($) {
-	"use strict";
-	$.extend({
-		simpleWeather: function(options){
-			options = $.extend({
-				zipcode: '76309',
-				location: '',
-				unit: 'f',
-				success: function(weather){},
-				error: function(message){}
-			}, options);
-			
-			var now = new Date();
-			
-			var weatherUrl = 'http://query.yahooapis.com/v1/public/yql?format=json&rnd='+now.getFullYear()+now.getMonth()+now.getDay()+now.getHours()+'&diagnostics=true&callback=?&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&q=';
-			if(options.location !== '') {
-				weatherUrl += 'select * from weather.forecast where location in (select id from weather.search where query="'+options.location+'") and u="'+options.unit+'"';
-			} else if(options.zipcode !== '') {
-				weatherUrl += 'select * from weather.forecast where location in ("'+options.zipcode+'") and u="'+options.unit+'"';
-			} else {
-				options.error("No location given.");
-				return false;
-			}
-						
-			$.getJSON(
-				weatherUrl,
-				function(data) {
-					if(data !== null && data.query.results !== null) {
-						$.each(data.query.results, function(i, result) {
-							if (result.constructor.toString().indexOf("Array") !== -1) {
-								result = result[0];
-							}
-														
-							var currentDate = new Date();
-							var sunRise = new Date(currentDate.toDateString() +' '+ result.astronomy.sunrise);
-							var sunSet = new Date(currentDate.toDateString() +' '+ result.astronomy.sunset);
-							
-							if(currentDate>sunRise && currentDate<sunSet) {
-								var timeOfDay = 'd'; 
-							} else {
-								var timeOfDay = 'n';
-							}
-							
-							var compass = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N'];
-							var windDirection = compass[Math.round(result.wind.direction / 22.5)];
-							
-							if(result.item.condition.temp < 80 && result.atmosphere.humidity < 40) {
-								var heatIndex = -42.379+2.04901523*result.item.condition.temp+10.14333127*result.atmosphere.humidity-0.22475541*result.item.condition.temp*result.atmosphere.humidity-6.83783*(Math.pow(10, -3))*(Math.pow(result.item.condition.temp, 2))-5.481717*(Math.pow(10, -2))*(Math.pow(result.atmosphere.humidity, 2))+1.22874*(Math.pow(10, -3))*(Math.pow(result.item.condition.temp, 2))*result.atmosphere.humidity+8.5282*(Math.pow(10, -4))*result.item.condition.temp*(Math.pow(result.atmosphere.humidity, 2))-1.99*(Math.pow(10, -6))*(Math.pow(result.item.condition.temp, 2))*(Math.pow(result.atmosphere.humidity,2));
-							} else {
-								var heatIndex = result.item.condition.temp;
-							}
-							
-							if(options.unit === "f") {
-								var tempAlt = Math.round((5.0/9.0)*(result.item.condition.temp-32.0));
-							} else {
-								var tempAlt = Math.round((9.0/5.0)*result.item.condition.temp+32.0);
-							}
-							
-							var weather = {					
-								title: result.item.title,
-								temp: result.item.condition.temp,
-								tempAlt: tempAlt,
-								code: result.item.condition.code,
-								todayCode: result.item.forecast[0].code,
-								units:{
-									temp: result.units.temperature,
-									distance: result.units.distance,
-									pressure: result.units.pressure,
-									speed: result.units.speed
-								},
-								currently: result.item.condition.text,
-								high: result.item.forecast[0].high,
-								low: result.item.forecast[0].low,
-								forecast: result.item.forecast[0].text,
-								wind:{
-									chill: result.wind.chill,
-									direction: windDirection,
-									speed: result.wind.speed
-								},
-								humidity: result.atmosphere.humidity,
-								heatindex: heatIndex,
-								pressure: result.atmosphere.pressure,
-								rising: result.atmosphere.rising,
-								visibility: result.atmosphere.visibility,
-								sunrise: result.astronomy.sunrise,
-								sunset: result.astronomy.sunset,
-								description: result.item.description,
-								thumbnail: "http://l.yimg.com/a/i/us/nws/weather/gr/"+result.item.condition.code+timeOfDay+"s.png",
-								image: "http://l.yimg.com/a/i/us/nws/weather/gr/"+result.item.condition.code+timeOfDay+".png",
-								tomorrow:{
-									high: result.item.forecast[1].high,
-									low: result.item.forecast[1].low,
-									forecast: result.item.forecast[1].text,
-									code: result.item.forecast[1].code,
-									date: result.item.forecast[1].date,
-									day: result.item.forecast[1].day,
-									image: "http://l.yimg.com/a/i/us/nws/weather/gr/"+result.item.forecast[1].code+"d.png"
-								},
-								city: result.location.city,
-								country: result.location.country,
-								region: result.location.region,
-								updated: result.item.pubDate,
-								link: result.item.link
-							};
-							
-							options.success(weather);
-						});
-					} else {
-						if (data.query.results === null) {
-							options.error("Invalid location given.");
-						} else {
-							options.error("Weather could not be displayed. Try again.");
-						}
-					}
-				}
-			);
-			return this;
-		}		
-	});
+  'use strict';
+
+  function getAltTemp(unit, temp) {
+    if(unit === 'f') {
+      return Math.round((5.0/9.0)*(temp-32.0));
+    } else {
+      return Math.round((9.0/5.0)*temp+32.0);
+    }
+  }
+
+  $.extend({
+    simpleWeather: function(options){
+      options = $.extend({
+        location: '29464',
+        woeid: '',
+        unit: 'f',
+        success: function(weather){},
+        error: function(message){}
+      }, options);
+
+      var now = new Date();
+      var weatherUrl = 'https://query.yahooapis.com/v1/public/yql?format=json&rnd=' + now.getFullYear() + now.getMonth() + now.getDay() + now.getHours() + '&diagnostics=true&callback=?&q=';
+
+      if(options.location !== '') {
+        /* If latitude/longitude coordinates, need to format a little different. */
+        var location = '';
+        if(/^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$/.test(options.location)) {
+          location = '(' + options.location + ')';
+        } else {
+          location = options.location;
+        }
+
+        weatherUrl += 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="' + location + '") and u="' + options.unit + '"';
+      } else if(options.woeid !== '') {
+        weatherUrl += 'select * from weather.forecast where woeid=' + options.woeid + ' and u="' + options.unit + '"';
+      } else {
+        options.error('Could not retrieve weather due to an invalid location.');
+        return false;
+      }
+
+      $.getJSON(
+        encodeURI(weatherUrl),
+        function(data) {
+          if(data !== null && data.query !== null && data.query.results !== null && data.query.results.channel.description !== 'Yahoo! Weather Error') {
+            var result = data.query.results.channel,
+                weather = {},
+                forecast,
+                compass = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N'],
+                image404 = 'https://s.yimg.com/os/mit/media/m/weather/images/icons/l/44d-100567.png';
+
+            weather.title = result.item.title;
+            weather.temp = result.item.condition.temp;
+            weather.code = result.item.condition.code;
+            weather.todayCode = result.item.forecast[0].code;
+            weather.currently = result.item.condition.text;
+            weather.high = result.item.forecast[0].high;
+            weather.low = result.item.forecast[0].low;
+            weather.text = result.item.forecast[0].text;
+            weather.humidity = result.atmosphere.humidity;
+            weather.pressure = result.atmosphere.pressure;
+            weather.rising = result.atmosphere.rising;
+            weather.visibility = result.atmosphere.visibility;
+            weather.sunrise = result.astronomy.sunrise;
+            weather.sunset = result.astronomy.sunset;
+            weather.description = result.item.description;
+            weather.city = result.location.city;
+            weather.country = result.location.country;
+            weather.region = result.location.region;
+            weather.updated = result.item.pubDate;
+            weather.link = result.item.link;
+            weather.units = {temp: result.units.temperature, distance: result.units.distance, pressure: result.units.pressure, speed: result.units.speed};
+            weather.wind = {chill: result.wind.chill, direction: compass[Math.round(result.wind.direction / 22.5)], speed: result.wind.speed};
+
+            if(result.item.condition.temp < 80 && result.atmosphere.humidity < 40) {
+              weather.heatindex = -42.379+2.04901523*result.item.condition.temp+10.14333127*result.atmosphere.humidity-0.22475541*result.item.condition.temp*result.atmosphere.humidity-6.83783*(Math.pow(10, -3))*(Math.pow(result.item.condition.temp, 2))-5.481717*(Math.pow(10, -2))*(Math.pow(result.atmosphere.humidity, 2))+1.22874*(Math.pow(10, -3))*(Math.pow(result.item.condition.temp, 2))*result.atmosphere.humidity+8.5282*(Math.pow(10, -4))*result.item.condition.temp*(Math.pow(result.atmosphere.humidity, 2))-1.99*(Math.pow(10, -6))*(Math.pow(result.item.condition.temp, 2))*(Math.pow(result.atmosphere.humidity,2));
+            } else {
+              weather.heatindex = result.item.condition.temp;
+            }
+
+            if(result.item.condition.code == '3200') {
+              weather.thumbnail = image404;
+              weather.image = image404;
+            } else {
+              weather.thumbnail = 'https://s.yimg.com/zz/combo?a/i/us/nws/weather/gr/' + result.item.condition.code + 'ds.png';
+              weather.image = 'https://s.yimg.com/zz/combo?a/i/us/nws/weather/gr/' + result.item.condition.code + 'd.png';
+            }
+
+            weather.alt = {temp: getAltTemp(options.unit, result.item.condition.temp), high: getAltTemp(options.unit, result.item.forecast[0].high), low: getAltTemp(options.unit, result.item.forecast[0].low)};
+            if(options.unit === 'f') {
+              weather.alt.unit = 'c';
+            } else {
+              weather.alt.unit = 'f';
+            }
+
+            weather.forecast = [];
+            for(var i=0;i<result.item.forecast.length;i++) {
+              forecast = result.item.forecast[i];
+              forecast.alt = {high: getAltTemp(options.unit, result.item.forecast[i].high), low: getAltTemp(options.unit, result.item.forecast[i].low)};
+
+              if(result.item.forecast[i].code == "3200") {
+                forecast.thumbnail = image404;
+                forecast.image = image404;
+              } else {
+                forecast.thumbnail = 'https://s.yimg.com/zz/combo?a/i/us/nws/weather/gr/' + result.item.forecast[i].code + 'ds.png';
+                forecast.image = 'https://s.yimg.com/zz/combo?a/i/us/nws/weather/gr/' + result.item.forecast[i].code + 'd.png';
+              }
+
+              weather.forecast.push(forecast);
+            }
+
+            options.success(weather);
+          } else {
+            options.error('There was a problem retrieving the latest weather information.');
+          }
+        }
+      );
+      return this;
+    }
+  });
 })(jQuery);
