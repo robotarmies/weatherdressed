@@ -3,7 +3,7 @@
 class WeatherDressed {
 
     private $_tempIndex = array(
-            'sweltering' => 100,
+            'damn hot' => 100,
             'hot' => 90,
             'warm' => 75,
             'nice' => 65,
@@ -13,7 +13,7 @@ class WeatherDressed {
     );
 
     private $outfit_matrix = array(
-        'sweltering' => 'ssleeve,shorts',
+        'damn hot' => 'ssleeve,shorts',
         'hot' => 'ssleeve,shorts',
         'warm' => 'ssleeve,pants',
         'nice' => 'lsleeve,pants',
@@ -21,13 +21,6 @@ class WeatherDressed {
         'cold' => 'lsleeve,pants,hoodie',
         'freezing' => 'lsleeve,pants,sweater,jacket'
         );
-
-    private $_outfit_presets = array(
-        'ssleeve' => array('red shirt','dark blue shirt','light blue shirt','gray shirt','red/white/blue button down','green button down','t-shirt'),
-        'lsleeve' => array('red shirt','dark blue shirt','light blue shirt','gray shirt','red/white/blue button down','green button down','t-shirt'),
-        'shorts' => array('gray cargos','other gray cargos','light shorts','dark shorts'),
-        'pants' => array('light jeans','slacks','dark jeans')
-    );
 
     private $_selectedArray = array();
 
@@ -77,10 +70,7 @@ class WeatherDressed {
                 'outfit' => $outfit
             );
         }
-
         return $wdForecast;
-
-
     }
 
     //get current weather conditions
@@ -213,16 +203,8 @@ class WeatherDressed {
         $wardrobe = NULL;
         $temp_desc = $this->getConditions($high,$low);
 
-        // very basic men's outfit based on temp
-        $outfit_matrix = $this->outfit_matrix;
-        $outfit = explode(',',$outfit_matrix[$temp_desc]);
-        foreach ($outfit as $article){
-            $wardrobe[] = $this->manageOutfits($article);
-        }
-
         $results = array(
-            'outfit'=>$outfit,
-            'wardrobe'=>$wardrobe,
+            'outfit'=>$this->selectOutfit($temp_desc),
             'cond'=>$temp_desc,
             'high'=>$high,
             'low'=>$low
@@ -230,32 +212,45 @@ class WeatherDressed {
         return $results;
     }
 
-    private function manageOutfits($article, $outfit = null){
-        //cache the outfits
-        if ($this->cache == null){
-            foreach ($this->_outfit_presets as $cacheArticle=>$cacheOptions){
-                if ($this->cache[$cacheArticle] == null){
-                    $this->cache[$cacheArticle] = $cacheOptions;
-                }
+    private function selectOutfit($temp_desc){
+        // very basic men's outfit using sample data
+        $outfit = array();
+        $outfit_presets = array();
+        $csv = array_map('str_getcsv', file('sample_data/sample_wardrobe.csv'));
+        $i = 0;
+        foreach ($csv as $x){
+            $i++;
+            if ($i > 1){
+                $outfit_presets[$x[1]][] = $x[0];
             }
         }
-        $closet = $this->_outfit_presets;
-        $options = $closet[$article];
-        $selected = $options[array_rand($options)];
+        $outfit_matrix = $this->outfit_matrix;
+        $outfit_options = explode(',',$outfit_matrix[$temp_desc]);
+        foreach ($outfit_options as $article){
+            //cache the outfits
+            if ($this->cache == null){
+                foreach ($outfit_presets as $cacheArticle=>$cacheOptions){
+                    if ($this->cache[$cacheArticle] == null){
+                        $this->cache[$cacheArticle] = $cacheOptions;
+                    }
+                }
+            }
+            $this->_outfit_presets = $outfit_presets;
+            $closet = $this->_outfit_presets;
+            $options = $closet[$article];
+            $selected = $options[array_rand($options)];
 
-        //fallback to rebuild options
-        if ($selected == null){
-            $this->_outfit_presets[$article] = $this->cache[$article];
-            $selected = $this->_outfit_presets[$article][array_rand($this->_outfit_presets[$article])];
+            //fallback to rebuild options
+            if ($selected == null){
+                $this->_outfit_presets[$article] = $this->cache[$article];
+                $selected = $this->_outfit_presets[$article][array_rand($this->_outfit_presets[$article])];
+            }
+
+            $outfit[$article] = $selected;
+            $key = array_search($selected,$closet[$article]);
+            unset ($this->_outfit_presets[$article][$key]);
         }
-
-        $key = array_search($selected,$closet[$article]);
-        unset ($this->_outfit_presets[$article][$key]);
-
-    return $selected;
+        return $outfit;
     }
 
-    private function getWardrobe($temp){
-
-    }
 }

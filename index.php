@@ -105,7 +105,6 @@
 
     <section id="work" class="container content-section text-center">
         <div class="row">
-
             <div class="col-md-12 text-left">
                 <div class="service-item">
                     <i class="service-icon fa fa-cloud cl-icon"></i>
@@ -115,13 +114,18 @@
                         $forecast = $core->getWeatherDressed($zip);
                         foreach ($forecast as $day){
                             echo "<div class='col-md-3 entry'>";
-                            echo "<h4>".$day['info']['dow']."</h4><h5>(<i>".ucfirst($day['outfit']['cond'])."</i>)</h5>";
-                            echo "High: ".$day['extremes']['tempHigh'].", Low: ".$day['extremes']['tempLow']."<br/>";
-                            echo "Humidity: ".$day['extremes']['humidity']."<br/>";
-                            echo "Condition: ".$day['info']['desc']."<br/>";
+                            echo "<h4>".$day['info']['dow']."</h4>";
+//                            echo "<h5>(<i>".ucfirst($day['outfit']['cond'])."</i>)</h5>";
+                            echo "Temp: ".$day['extremes']['tempLow']."° - ".$day['extremes']['tempHigh']."°<br/>";
+//                            echo "High: ".$day['extremes']['tempHigh']."<br/>";
+//                            echo "Low: ".$day['extremes']['tempLow']."<br/>";
+                            echo "Humidity: ".$day['extremes']['humidity']."%<br/>";
+                            echo "Conditions: ".$day['info']['desc']."<br/>";
+                            echo "Description: ".ucfirst($day['outfit']['cond'])."<br/>";
+
                             $i = 0;
-                            foreach ($day['outfit']['outfit'] as $article){
-                                echo "<div id='outfit_$article' class='outfit'>".$day['outfit']['wardrobe'][$i]."</div>";
+                            foreach ($day['outfit']['outfit'] as $key => $article){
+                                echo "<div id='outfit_$key' class='outfit'>".$article."</div>";
                                 $i++;
                             }
                             echo "</div>";
@@ -130,7 +134,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </section>
 
@@ -158,6 +161,10 @@
 
 </body>
 <footer>
-    <div class="footer">copyright © 2016 robot armies</div>
+    <div class="copyright" align="right">©2016 Robot Armies</div>
+    <div class="robotarmies" align="left">
+        <a href="http://www.robotarmies.com" target="_blank"><img src="http://robohash.org/<?php echo rand() ?>.png?size=50x50" align="left"></a>
+        <div class="text">Greetings, human! This site was created by <a href="http://www.robotarmies.com" target="_blank">robot armies</a>.</div>
+    </div>
 </footer>
 </html>

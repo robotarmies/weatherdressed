@@ -459,3 +459,16 @@ h3.cl-feed {
 #outfit_jacket {
     background: url(../img/cloth_icons.jpg) 285px 248px;
 }
+
+
+.robotarmies .text {
+    font-size: 14px;
+    padding-top: 14px;
+}
+
+.copyright {
+    float: right;
+    font-size: 14px;
+    padding-top: 14px;
+    padding-right: 5px
+}

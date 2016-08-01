@@ -1,0 +1,8 @@
+'ssleeve' => array('red shirt','dark blue shirt','light blue shirt','gray shirt','red/white/blue button down','green button down','t-shirt');
+'lsleeve' => array('red shirt','dark blue shirt','light blue shirt','gray shirt','red/white/blue button down','green button down','t-shirt');
+'tshirts' => array('white','blue','red','green','grey');
+'shorts' => array('gray cargos','other gray cargos','light shorts','dark shorts');
+'pants' => array('light jeans','slacks','dark jeans');
+'hoodie' => array('green','blue','grey');
+'sweater' => array('blue','dark blue','red');
+'jacket' => array('puffy coat','brown jacket','p coat');
