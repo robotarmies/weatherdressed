@@ -419,7 +419,7 @@ h3.cl-feed {
 /* Weather Outfit Application */
 .entry {
     padding-bottom: 30px;
-    height: 275px;
+    /*height: 275px;*/
 }
 
 .outfit {
