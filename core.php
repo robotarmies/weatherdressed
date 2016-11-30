@@ -17,9 +17,9 @@ class WeatherDressed {
         'hot' => 'ssleeve,shorts',
         'warm' => 'ssleeve,pants',
         'nice' => 'lsleeve,pants',
-        'cool' => 'lsleeve,pants,sweater',
-        'cold' => 'lsleeve,pants,hoodie',
-        'freezing' => 'lsleeve,pants,sweater,jacket'
+        'cool' => 'lsleeve,sweater,pants',
+        'cold' => 'lsleeve,hoodie,pants',
+        'freezing' => 'lsleeve,sweater,pants,jacket'
         );
 
     private $_selectedArray = array();
