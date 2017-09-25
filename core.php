@@ -5,9 +5,9 @@ class WeatherDressed {
     private $_tempIndex = array(
             'damn hot' => 100,
             'hot' => 90,
-            'warm' => 75,
-            'nice' => 65,
-            'cool' => 55,
+            'warm' => 80,
+            'nice' => 68,
+            'cool' => 60,
             'cold' => 45,
             'freezing' => 32
     );
@@ -21,6 +21,15 @@ class WeatherDressed {
         'cold' => 'lsleeve,hoodie,pants',
         'freezing' => 'lsleeve,sweater,pants,jacket'
         );
+
+    private $color_matrix = array(
+        'red' => 'blue,yellow',
+        'purple' => 'green, orange',
+        'blue' => 'yellow,red',
+        'green' => 'orange, purple',
+        'yellow' => 'red,blue',
+        'orange' => 'purple,green',
+    );
 
     private $_selectedArray = array();
 
@@ -215,13 +224,16 @@ class WeatherDressed {
     private function selectOutfit($temp_desc){
         // very basic men's outfit using sample data
         $outfit = array();
+        $primaryColor = null;
         $outfit_presets = array();
         $csv = array_map('str_getcsv', file('sample_data/sample_wardrobe.csv'));
         $i = 0;
         foreach ($csv as $x){
             $i++;
             if ($i > 1){
-                $outfit_presets[$x[1]][] = $x[0];
+                $articleName = $x[0];
+                $articleColor = $x[2];
+                $outfit_presets[$x[1]][$articleName][] = $articleColor;
             }
         }
         $outfit_matrix = $this->outfit_matrix;
@@ -238,7 +250,14 @@ class WeatherDressed {
             $this->_outfit_presets = $outfit_presets;
             $closet = $this->_outfit_presets;
             $options = $closet[$article];
-            $selected = $options[array_rand($options)];
+            $selected = array_rand($options);
+            $selectedColor = $options[$selected][0];
+
+            //color matching
+            if ($primaryColor == null) {
+                $primaryColor = $selectedColor;
+                $palette = $this ->color_matrix[$primaryColor];
+            }
 
             //fallback to rebuild options
             if ($selected == null){
